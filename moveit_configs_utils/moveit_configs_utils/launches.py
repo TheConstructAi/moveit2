@@ -22,7 +22,8 @@ def generate_rsp_launch(moveit_config):
     """Launch file for robot state publisher (rsp)"""
 
     ld = LaunchDescription()
-    ld.add_action(DeclareLaunchArgument("publish_frequency", default_value="15.0"))
+    ld.add_action(DeclareLaunchArgument(
+        "publish_frequency", default_value="15.0"))
 
     # Given the published joint states, publish tf for the robot links and the robot description
     rsp_node = Node(
@@ -50,7 +51,8 @@ def generate_moveit_rviz_launch(moveit_config):
     ld.add_action(
         DeclareLaunchArgument(
             "rviz_config",
-            default_value=str(moveit_config.package_path / "config/moveit.rviz"),
+            default_value=str(moveit_config.package_path /
+                              "config/moveit.rviz"),
         )
     )
 
@@ -144,11 +146,13 @@ def generate_warehouse_db_launch(moveit_config):
     ld.add_action(DeclareBooleanLaunchArg("reset", default_value=False))
 
     # The default DB port for moveit (not default MongoDB port to avoid potential conflicts)
-    ld.add_action(DeclareLaunchArgument("moveit_warehouse_port", default_value="33829"))
+    ld.add_action(DeclareLaunchArgument(
+        "moveit_warehouse_port", default_value="33829"))
 
     # The default DB host for moveit
     ld.add_action(
-        DeclareLaunchArgument("moveit_warehouse_host", default_value="localhost")
+        DeclareLaunchArgument("moveit_warehouse_host",
+                              default_value="localhost")
     )
 
     # Load warehouse parameters
@@ -189,19 +193,23 @@ def generate_move_group_launch(moveit_config):
 
     ld.add_action(DeclareBooleanLaunchArg("debug", default_value=False))
     ld.add_action(
-        DeclareBooleanLaunchArg("allow_trajectory_execution", default_value=True)
+        DeclareBooleanLaunchArg(
+            "allow_trajectory_execution", default_value=True)
     )
     ld.add_action(
-        DeclareBooleanLaunchArg("publish_monitored_planning_scene", default_value=True)
+        DeclareBooleanLaunchArg(
+            "publish_monitored_planning_scene", default_value=True)
     )
     # load non-default MoveGroup capabilities (space separated)
     ld.add_action(DeclareLaunchArgument("capabilities", default_value=""))
     # inhibit these default MoveGroup capabilities (space separated)
-    ld.add_action(DeclareLaunchArgument("disable_capabilities", default_value=""))
+    ld.add_action(DeclareLaunchArgument(
+        "disable_capabilities", default_value=""))
 
     # do not copy dynamics information from /joint_states to internal robot monitoring
     # default to false, because almost nothing in move_group relies on this information
-    ld.add_action(DeclareBooleanLaunchArg("monitor_dynamics", default_value=False))
+    ld.add_action(DeclareBooleanLaunchArg(
+        "monitor_dynamics", default_value=False))
 
     should_publish = LaunchConfiguration("publish_monitored_planning_scene")
 
@@ -221,6 +229,7 @@ def generate_move_group_launch(moveit_config):
         "publish_state_updates": should_publish,
         "publish_transforms_updates": should_publish,
         "monitor_dynamics": False,
+        "use_sim_time": True,
     }
 
     move_group_params = [
@@ -232,7 +241,8 @@ def generate_move_group_launch(moveit_config):
         ld,
         package="moveit_ros_move_group",
         executable="move_group",
-        commands_file=str(moveit_config.package_path / "launch" / "gdb_settings.gdb"),
+        commands_file=str(moveit_config.package_path /
+                          "launch" / "gdb_settings.gdb"),
         output="screen",
         parameters=move_group_params,
         extra_debug_args=["--debug"],
@@ -334,7 +344,8 @@ def generate_demo_launch(moveit_config):
     ld.add_action(
         IncludeLaunchDescription(
             PythonLaunchDescriptionSource(
-                str(moveit_config.package_path / "launch/spawn_controllers.launch.py")
+                str(moveit_config.package_path /
+                    "launch/spawn_controllers.launch.py")
             ),
         )
     )
